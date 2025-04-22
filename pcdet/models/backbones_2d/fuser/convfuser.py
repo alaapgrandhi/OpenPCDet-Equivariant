@@ -27,7 +27,14 @@ class ConvFuser(nn.Module):
         """
         img_bev = batch_dict['spatial_features_img']
         lidar_bev = batch_dict['spatial_features']
+        print(img_bev.shape)
+        print(lidar_bev.shape)
         cat_bev = torch.cat([img_bev,lidar_bev],dim=1)
         mm_bev = self.conv(cat_bev)
+        print(mm_bev.shape)
+        print("\n\n")
+        batch_dict["img_feats_vis"] = img_bev
+        batch_dict["lidar_feats_vis"] = lidar_bev
+        batch_dict["fused_feats_vis"] = mm_bev
         batch_dict['spatial_features'] = mm_bev
         return batch_dict
