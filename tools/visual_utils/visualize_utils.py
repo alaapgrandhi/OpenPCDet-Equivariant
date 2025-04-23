@@ -139,7 +139,8 @@ def draw_multi_grid_range(fig, grid_size=20, bv_range=(-60, -60, 60, 60)):
     return fig
 
 
-def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_scores=None, ref_labels=None):
+def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_scores=None, ref_labels=None, azi=None, elev=None, dist=None,
+                rol=None):
     if not isinstance(points, np.ndarray):
         points = points.cpu().numpy()
     if ref_boxes is not None and not isinstance(ref_boxes, np.ndarray):
@@ -166,7 +167,21 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_scores=None, ref_labe
                 cur_color = tuple(box_colormap[k % len(box_colormap)])
                 mask = (ref_labels == k)
                 fig = draw_corners3d(ref_corners3d[mask], fig=fig, color=cur_color, cls=ref_scores[mask], max_num=100)
-    mlab.view(azimuth=-179, elevation=54.0, distance=104.0, roll=90.0)
+
+    azimuth = -179
+    elevation = 54.0
+    distance = 104.0
+    roll = 90.0
+    if azi:
+        azimuth = azi
+    if elev:
+        elevation = elev
+    if dist:
+        distance = dist
+    if rol:
+        roll = rol
+
+    mlab.view(azimuth=azimuth, elevation=elevation, distance=distance, roll=roll)
     return fig
 
 

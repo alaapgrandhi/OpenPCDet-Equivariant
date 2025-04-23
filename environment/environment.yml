@@ -40,8 +40,6 @@ dependencies:
       - colorlog==6.9.0
       - comm==0.2.2
       - configargparse==1.7
-      - cumm==0.7.11
-      - cumm-cu124==0.7.11
       - cycler==0.12.1
       - dash==3.0.2
       - decorator==5.2.1
@@ -110,7 +108,7 @@ dependencies:
       - parso==0.8.4
       - pccm==0.4.16
       - pexpect==4.9.0
-      - pillow==8.4.0
+      - pillow==9.3.0
       - plotly==6.0.1
       - polars==1.26.0
       - portalocker==3.1.1
@@ -140,7 +138,6 @@ dependencies:
       - shapely==1.8.5.post1
       - sharedarray==3.2.4
       - six==1.17.0
-      - spconv-cu124==2.3.8
       - stack-data==0.6.3
       - sympy==1.13.1
       - tensorboardx==2.6.2.2
