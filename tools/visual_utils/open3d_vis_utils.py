@@ -46,8 +46,9 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
     vis = open3d.visualization.Visualizer()
     vis.create_window()
 
-    vis.get_render_option().point_size = 1.0
-    vis.get_render_option().background_color = np.zeros(3)
+    if vis.get_render_option():
+        vis.get_render_option().point_size = 1.0
+        vis.get_render_option().background_color = np.zeros(3)
 
     # draw origin
     if draw_origin:
@@ -71,6 +72,44 @@ def draw_scenes(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scor
 
     vis.run()
     vis.destroy_window()
+
+
+def draw_scenes_projected(points, gt_boxes=None, ref_boxes=None, ref_labels=None, ref_scores=None, img_dims=(720, 1080),
+                          vfov=60.0, center=np.array([0, 0, 0]), eye=np.array([0, 0, 35]), up=np.array([0, 1, 0]),
+                          near_clip=1.0, far_clip=80.0):
+
+    if isinstance(points, torch.Tensor):
+        points = points.cpu().numpy()
+    if isinstance(gt_boxes, torch.Tensor):
+        gt_boxes = gt_boxes.cpu().numpy()
+    if isinstance(ref_boxes, torch.Tensor):
+        ref_boxes = ref_boxes.cpu().numpy()
+
+    renderer = open3d.visualization.rendering.OffscreenRenderer(*img_dims)
+
+    pts = open3d.geometry.PointCloud()
+    pts.points = open3d.utility.Vector3dVector(points[:, :3])
+    colours = np.ones((points.shape[0], 3))
+    colours[:,0] = 0
+    pts.colors = open3d.utility.Vector3dVector(colours)
+
+    material = open3d.visualization.rendering.MaterialRecord()
+    material.shader = "defaultUnlit"
+    material.point_size = 3.0
+
+    renderer.scene.add_geometry("points", pts, material)
+
+    if gt_boxes is not None:
+        renderer = draw_box_proj(renderer, gt_boxes, (0, 1, 0), label="gt_bbox_lines")
+
+    if ref_boxes is not None:
+        renderer = draw_box_proj(renderer, ref_boxes, (1, 0, 0), ref_labels, ref_scores, label="ref_bbox_lines")
+
+    renderer.setup_camera(vertical_field_of_view=vfov, center=center, eye=eye, up=up, near_clip=near_clip,
+                          far_clip=far_clip)
+
+    img = renderer.render_to_image()
+    return img
 
 
 def translate_boxes_to_open3d_instance(gt_boxes):
@@ -109,8 +148,19 @@ def draw_box(vis, gt_boxes, color=(0, 1, 0), ref_labels=None, score=None):
             line_set.paint_uniform_color(box_colormap[ref_labels[i]])
 
         vis.add_geometry(line_set)
-
-        # if score is not None:
-        #     corners = box3d.get_box_points()
-        #     vis.add_3d_label(corners[5], '%.2f' % score[i])
     return vis
+
+
+def draw_box_proj(renderer, gt_boxes, color=(0, 1, 0), ref_labels=None, score=None, label="bbox_lines"):
+    for i in range(gt_boxes.shape[0]):
+        line_set, box3d = translate_boxes_to_open3d_instance(gt_boxes[i])
+        if ref_labels is None:
+            line_set.paint_uniform_color(color)
+        else:
+            line_set.paint_uniform_color(box_colormap[ref_labels[i]])
+
+        material = open3d.visualization.rendering.MaterialRecord()
+        material.shader = "unlitLine"
+        material.line_width = 2.0
+        renderer.scene.add_geometry(label + f"_{i}", line_set, material)
+    return renderer

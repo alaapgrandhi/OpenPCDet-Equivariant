@@ -124,6 +124,7 @@ dependencies:
       - pyparsing==3.2.3
       - pyproj==3.6.1
       - pyquaternion==0.9.9
+      - pytest==8.3.5
       - python-dateutil==2.9.0.post0
       - pytz==2025.2
       - pyyaml==6.0.2
