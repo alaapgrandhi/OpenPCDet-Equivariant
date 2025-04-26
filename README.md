@@ -1,4 +1,9 @@
 ## Installation instructions
+### Getting the code
+
+### Setting up the environment
+- Clone the repository by running '''git clone --recurse-submodules git@github.com:alaapgrandhi/OpenPCDet-Equivariant.git'''
+
 
 ## Module relations with the code
 
