@@ -56,4 +56,43 @@ pytest --disable-warnings
 ```
 
 ## Module relations with the code
+Many modules described in the Module Guide and Module Interface Specification documents are split into entire folders. They can also be divided into files in different locations in the code. As such, the sections below are used to provide clearer traceability between these modules and their corresponding code sections. The PyTorch and Logging modules are omitted as they are simply imported from the PyTorch and Tensorboard libraries, respectively.
 
+### Config Module
+The YAML configs are in the `tools/cfgs` folder. They are divided into `dataset_configs` for setting up the data and `nuscenes_models` for setting up the NuScenes model and optimization pipelines. The code for loading and formatting these config files is in the `pcdet/config.py` file.
+
+### Data Module
+The dataset itself is stored in the `data/nuscenes` folder. The code for loading and formatting this data into a PyTorch dataset is located in the `pcdet/datasets/nuscenes` folder, built upon the template defined in the `pcdet/datasets/dataset.py` file.
+
+### Model Module
+The outer end-to-end code for the model (corresponding to the model module) is located in the `pcdet/models/detectors` folder. The BEVFusion version of this is located in the `pcdet/models/detectors/bevfusion.py` file, built upon the template defined in the `pcdet/models/detectors/detector3d_template.py` file.
+
+### Checkpoint Module
+The checkpoint loading function is in the `pcdet/models/detectors/detector3d_template.py` file under the name load_params_from_file. The actual checkpoints themselves are stored under the `pretrained_models` folder.
+
+### Training Module
+The training module/code is located in the `tools/train.py` file. 
+
+### Inference Module
+The inference module/code is located in the `tools/infer.py` file.
+
+### Loss Module
+The loss module/code is located in the `pcdet/utils/loss_utils.py` file.
+
+### Evaluation Module
+The evaluation module/code is located in the `tools/test.py` file.
+
+### Optimization Module
+The optimization module (encapsulating both the ADAM-based optimizer and the [learning rate scheduler](https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate)) is located in the `tools/train_utils/optimization` folder.
+
+### Data Processing Module
+The data processing module is in the `pcdet/datasets/processor` folder.
+
+### Equivariant Layer Module
+The equivariant layer module is currently being modified on a non-pushed branch (since it is unstable at the moment) and will be added in future iterations of the codebase.
+
+### OpenPCDet Layer Module
+The OpenPCDet layer module is split across all the subfolders in the `pcdet/models` folder, excluding the aforementioned `pcdet/models/detectors` folder. 
+
+### Plotting Module
+The plotting module is located in the `tools/visual_utils` folder.
