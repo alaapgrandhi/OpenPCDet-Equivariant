@@ -1,0 +1,6 @@
+[submodule "third_party/spconv"]
+	path = third_party/spconv
+	url = https://github.com/traveller59/spconv.git
+[submodule "third_party/cumm"]
+	path = third_party/cumm
+	url = https://github.com/FindDefinition/cumm.git
